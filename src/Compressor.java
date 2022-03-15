@@ -41,28 +41,41 @@ public class Compressor {
         catch (FileNotFoundException e) {
             System.out.println("An error has occurred.");
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     private static void comprimirImatge() {
+
     }
 
+    /**
+     *
+     * @param nomFitxer
+     * @return
+     * @throws FileNotFoundException
+     * @throws InputMismatchException
+     */
     private static boolean comprimirLogotip(String nomFitxer) throws FileNotFoundException, InputMismatchException {
 
         boolean correcte = false;
         File Obj = new File(nomFitxer);
         Scanner Document = new Scanner(Obj);
-        int[][] imatge = processarImatge(Document);
-
+        int[][] imatge = entaularImatge(Document);
+        comprimirTaula(imatge);
 
         return correcte;
 
     }
-    private static int[][] processarImatge(Scanner Document) {
+
+    /**
+     * Aquesta funció fa que la imatge es torni una taula per poder treballar amb ella correctament.
+     * @param Document la imatge
+     * @return retorna la imatge feta taula. taula[files][colums]
+     * @throws InputMismatchException
+     */
+    private static int[][] entaularImatge(Scanner Document) throws InputMismatchException{
         String format = Document.nextLine();
-        int[][] taula = new int[0][1];
+        int[][] taula = new int[4000][4000];
         if (format.equals("P2")) {
             Document.nextLine();
             String resolucio = Document.nextLine();
@@ -79,6 +92,40 @@ public class Compressor {
         return taula;
     }
 
+    private static String[] comprimirTaula(int[][] taula){
+        String[] taulaComprimida = new String[4000*4000];
+        String[] taulaHoritzontal = new String[4000*4000];
+        String[] taulaVertical = new String[4000*4000];
+        int treballant=0;
+        int comparat=-1;
+        int comptador = 1;
+        int filesComprimit=0;
+        treballant = taula[0][0];
+
+        for(int i=0; i < taula.length; i++){
+            for(int j=0; j < taula[0].length;j++){
+
+                comparat = taula[i][j];
+                if(i==0&&j==0){
+                    comparat = taula[1][1];
+                }
+                if(treballant==comparat){
+                    comptador++;
+                }else{
+                    taulaHoritzontal[filesComprimit]=treballant+" "+comptador;
+                    treballant = comparat;
+                }
+            }
+        }
+
+        //TODO fer lo mateix per la vertical. després implementar-ho per tal que ho faci en quadrats més petits
+
+        if(taulaHoritzontal.length<taulaVertical.length){
+            taulaComprimida=taulaHoritzontal;
+        }else taulaComprimida=taulaVertical;
+
+        return taulaComprimida;
+    }
 
     private static String demanarNomFitxer(Scanner teclat){
         boolean correcte = false;
