@@ -2,10 +2,10 @@ package dades;
 import excepcions.ValorIncorrecte;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 
-
-public abstract class ContingutCompressor implements Serializable {
+public class ContingutCompressor implements Serializable {
 
     static final long serialVersionUID = 1;
 
@@ -16,18 +16,10 @@ public abstract class ContingutCompressor implements Serializable {
 
 
 
-    public ContingutCompressor(int filesTaula, int colmsTaula, String[] contingutComprimit)throws ValorIncorrecte{
-        if(filesTaula<0||colmsTaula<0)throw new ValorIncorrecte();
-        this.numElements=colmsTaula;
+    public ContingutCompressor(){
+        this.numElements=0;
 
         this.contingutComprimit= new String[16000000]; // 4k*4k
-
-    }
-    public ContingutCompressor(){
-        this.numElements=1;
-
-        this.contingutComprimit = new String[1];
-            contingutComprimit[0] = "Taula buida";
 
     }
 
@@ -39,6 +31,12 @@ public abstract class ContingutCompressor implements Serializable {
         this.contingutComprimit = contingutComprimit;
     }
 
+    public void setNumElements(int numElements) {
+        this.numElements = numElements;
+    }
+    public int getNumElements() {
+        return numElements;
+    }
 
 
 
@@ -56,7 +54,23 @@ public abstract class ContingutCompressor implements Serializable {
         return text.toString();
     }
 
-    public void afegirValor(){
+    public ContingutCompressor copia() throws ValorIncorrecte, IndexOutOfBoundsException{
+        ContingutCompressor novaLlista = new ContingutCompressor();
+        int i;
+        for (i = 0; i < this.numElements; i++){
+            novaLlista.afegirValor(this.contingutComprimit[i]);
+        }
+        novaLlista.numElements=this.numElements;
+        return novaLlista;
+    }
+
+    public void afegirValor(String nouValor) throws IndexOutOfBoundsException{
+
+        if (this.numElements >= this.contingutComprimit.length)  throw new IndexOutOfBoundsException();
+
+        //Si la llista no està plena
+        this.contingutComprimit[numElements] = nouValor;    //afegim el producte al final de la llista
+        this.numElements++;
 
     }
 
